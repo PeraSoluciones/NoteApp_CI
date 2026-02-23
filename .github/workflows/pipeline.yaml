@@ -20,17 +20,17 @@ jobs:
       - name: Install backend dependencies
         run: cd backend && npm install
       - name: Install frontend dependencies
-        run: cd ../frontend && npm install
+        run: cd frontend && npm install
       - name: Check backend styles
-        run: cd ../backend && npm run lint
+        run: cd backend && npm run lint
       - name: Check frontend styles
-        run: cd ../frontend && npm run lint
+        run: cd frontend && npm run lint
       - name: build
-        run: cd ../backend && npm run build:ui
+        run: cd backend && npm run build:ui
       - name: Test backend
         run: npm run start:test
       - name: Test frontend
-        run: cd ../frontend && npm run test
+        run: cd frontend && npm run test
       - name: Trigger deployment
         run: curl https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}
       
