@@ -1,0 +1,36 @@
+name: Deployment pipeline
+
+on:
+  push:
+    branches:
+      - main    
+  pull_request:
+      branches: [main]
+      types: [opened, synchronize]
+
+jobs:
+  simple_deployment_pipeline:
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'push' }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 20
+      - name: Install backend dependencies
+        run: cd backend && npm install
+      - name: Install frontend dependencies
+        run: cd ../frontend && npm install
+      - name: Check backend styles
+        run: cd ../backend && npm run lint
+      - name: Check frontend styles
+        run: cd ../frontend && npm run lint
+      - name: build
+        run: cd ../backend && npm run build:ui
+      - name: Test backend
+        run: npm run start:test
+      - name: Test frontend
+        run: cd ../frontend && npm run test
+      - name: Trigger deployment
+        run: curl https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}
+      
